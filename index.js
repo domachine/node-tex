@@ -78,35 +78,36 @@ function nodeTeX(stream, dependencies, options, callback) {
       keep: options.keep || false
     }, 
     function (err, tmpPath) {
-      var writeStream;
       if (err) throw err;
-      options.path = tmpPath;
-      options.file = path.join(options.path, options.filename);
-      writeStream = fs.createWriteStream(options.file);
-      stream.on('end', function (err) {
-        runTeX(options, function (err) {
-          var pdf = path.join(
-            options.path,
-            path.basename(options.filename, '.tex') + '.pdf'
-          );
-          if (err) {
-            callback(err);
-          } else {
-            callback(null, fs.createReadStream(pdf));
-          }
-        });
-      });
-      writeStream.on('error', callback);
       async.forEach(
         dependencies,
         function (item, callback) {
           var dependancy = path.join(options.path, item.filename) + '.tex';
           var stream = fs.createWriteStream(dependancy);
-          stream.on('end', function () {
-            callback();
+          item.on('end', function () {
+              callback();
           });
+          item.pipe(stream);
         },
         function (err) {
+          var writeStream;
+          options.path = tmpPath;
+          options.file = path.join(options.path, options.filename);
+          writeStream = fs.createWriteStream(options.file);
+          stream.on('end', function (err) {
+            runTeX(options, function (err) {
+              var pdf = path.join(
+                options.path,
+                path.basename(options.filename, '.tex') + '.pdf'
+              );
+              if (err) {
+                callback(err);
+              } else {
+                callback(null, fs.createReadStream(pdf));
+              }
+            });
+          });
+          writeStream.on('error', callback);
           stream.pipe(writeStream);
         }
       );

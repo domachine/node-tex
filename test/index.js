@@ -16,10 +16,6 @@ describe('NodeTeX', function () {
     mockery.registerMock('fs', {
       createWriteStream: function (file) {
         var pipe = new Pipe();
-        file.should.match(/^.*\/node-tex-test.*\/texput.tex/);
-        pipe.reader.on('data', function (data) {
-          data.toString().should.equal('Test');
-        });
         return pipe.writer;
       },
       readFile: function () {
@@ -59,7 +55,17 @@ describe('NodeTeX', function () {
   });
   it('should run valid sample', function (done) {
     var stream = new ReadStream('Test');
-    nodeTex(stream, options, function () {
+    var dependencies = [];
+    var dep1 = new ReadStream('Dep1');
+    dep1.filename = 'dep1';
+    dependencies.push(dep1);
+    var dep2 = new ReadStream('Dep2');
+    dep2.filename = 'dep2';
+    dependencies.push(dep2);
+    var dep3 = new ReadStream('Dep3');
+    dep3.filename = 'dep3';
+    dependencies.push(dep3);
+    nodeTex(stream, dependencies, options, function () {
       done();
     });
   });
