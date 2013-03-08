@@ -76,8 +76,15 @@ function nodeTeX(stream, options, callback) {
       writeStream = fs.createWriteStream(options.file);
       stream.on('end', function (err) {
         runTeX(options, function (err) {
-          if (err) throw err;
-          callback(fs.createReadStream(options.file));
+          var pdf = path.join(
+            options.path,
+            path.basename(options.filename, '.tex') + '.pdf'
+          );
+          if (err) {
+            callback(err);
+          } else {
+            callback(null, fs.createReadStream(pdf));
+          }
         });
       });
       writeStream.on('error', callback);
