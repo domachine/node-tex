@@ -3,7 +3,7 @@ var path = require('path');
 var spawn = require('child_process').spawn;
 var tmp = require('tmp');
 function TeXError(line, error, message) {
-this.line = line;
+  this.line = line;
   this.error = error;
   this.message = message;
 }
