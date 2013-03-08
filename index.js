@@ -5,6 +5,8 @@ var fs = require('fs');
 var path = require('path');
 var spawn = require('child_process').spawn;
 var tmp = require('tmp');
+var util = require('util');
+var async = require('async');
 function TeXError(line, error, message) {
   this.line = line;
   this.error = error;
@@ -55,12 +57,19 @@ function checkLog(log) {
  * * `command` - The command to use.
  */
 
-function nodeTeX(stream, options, callback) {
-  if (typeof options === 'function') {
+function nodeTeX(stream, dependencies, options, callback) {
+  if (!util.isArray(dependencies) && typeof dependencies === 'object') {
+    callback = options;
+    options = dependencies;
+    dependencies = [];
+  } else if (typeof dependencies === 'function') {
+    callback = dependencies;
+    dependencies = [];
+    options = {};
+  } else if (typeof options === 'function') {
     callback = options;
     options = {};
   }
-  options = options || {};
   options.command = options.command || 'lualatex';
   options.filename = 'texput.tex';
   tmp.dir(
@@ -88,7 +97,19 @@ function nodeTeX(stream, options, callback) {
         });
       });
       writeStream.on('error', callback);
-      stream.pipe(writeStream);
+      async.forEach(
+        dependencies,
+        function (item, callback) {
+          var dependancy = path.join(options.path, item.filename) + '.tex';
+          var stream = fs.createWriteStream(dependancy);
+          stream.on('end', function () {
+            callback();
+          });
+        },
+        function (err) {
+          stream.pipe(writeStream);
+        }
+      );
     }
   );
 };

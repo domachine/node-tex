@@ -54,7 +54,7 @@ describe('NodeTeX', function () {
         callback(null, '/tmp/' + options.prefix + '1234');
       }
     });
-    mockery.registerAllowables(['path', '../index']);
+    mockery.registerAllowables(['path', 'async', 'util', './lib/async', '../index']);
     nodeTex = require('../index');
   });
   it('should run valid sample', function (done) {
