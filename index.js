@@ -51,6 +51,10 @@ function checkLog(log) {
  */
 
 function nodeTeX(stream, options, callback) {
+  if (typeof options === 'function') {
+    callback = options;
+    options = {};
+  }
   options = options || {};
   options.command = options.command || 'lualatex';
   options.filename = 'texput.tex';
