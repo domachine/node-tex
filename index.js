@@ -50,14 +50,14 @@ function checkLog(log) {
  * * `command` - The command to use.
  */
 
-function nodeTex(stream, options, callback) {
+function nodeTeX(stream, options, callback) {
   options = options || {};
   options.command = options.command || 'lualatex';
   options.filename = 'texput.tex';
   tmp.dir(
     {
       prefix: 'node-tex-tmp', 
-      keep: true
+      keep: options.keep || false
     }, 
     function (err, tmpPath) {
       var writeStream;
@@ -73,4 +73,4 @@ function nodeTex(stream, options, callback) {
     }
   );
 };
-module.exports = nodeTex;
+module.exports = nodeTeX;
