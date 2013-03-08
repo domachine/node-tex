@@ -6,7 +6,7 @@ var path = require('path');
 var spawn = require('child_process').spawn;
 var tmp = require('tmp');
 function TeXError(line, error, message) {
-this.line = line;
+  this.line = line;
   this.error = error;
   this.message = message;
 }
@@ -56,6 +56,10 @@ function checkLog(log) {
  */
 
 function nodeTeX(stream, options, callback) {
+  if (typeof options === 'function') {
+    callback = options;
+    options = {};
+  }
   options = options || {};
   options.command = options.command || 'lualatex';
   options.filename = 'texput.tex';
