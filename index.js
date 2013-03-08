@@ -7,7 +7,7 @@ this.line = line;
   this.error = error;
   this.message = message;
 }
-function runTeX(options) {
+function runTeX(options, callback) {
   var tex;
   tex = spawn(
     options.command,
@@ -28,16 +28,29 @@ function runTeX(options) {
         if (errors === []) {
           runTeX(options);
         } else {
-          throw errors;
+          callback(errors);
         }
       });
+    } else {
+      callback();
     }
   });
 }
 function checkLog(log) {
   return [];
 }
-module.exports = exports = function (stream, options) {
+
+/**
+ * The main entry function.  It is called with the stream that should be
+ * processed.
+ * @param {Stream|String} stream The stream/string that should be processed.
+ * @param {Object} options The object that configures the backend. It supports the
+ * following keys:
+ * * `filename` - The filename to use for the temporary texfile.
+ * * `command` - The command to use.
+ */
+
+function nodeTex(stream, options, callback) {
   options = options || {};
   options.command = options.command || 'lualatex';
   options.filename = 'texput.tex';
@@ -53,10 +66,11 @@ module.exports = exports = function (stream, options) {
       options.file = path.join(options.path, options.filename);
       writeStream = fs.createWriteStream(options.file);
       writeStream.on('end', function (err) {
-        if (err) throw err;
-        runTeX(options);
+        runTeX(options, callback);
       });
+      writeStream.on('error', callback);
       stream.pipe(writeStream);
     }
   );
 };
+module.exports = nodeTex;

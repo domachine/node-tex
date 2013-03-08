@@ -4,11 +4,11 @@
   "description": "Simple backend to TeX for node.js",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha test"
   },
   "repository": {
     "type": "git",
-    "url": "git@gitlab.mikanda.de:stefan/node-tex.git"
+    "url": "git@github.com:mikanda/node-tex.git"
   },
   "keywords": [
     "latex",
@@ -17,6 +17,5 @@
     "lualatex"
   ],
   "author": "mikanda IT Solutions",
-  "license": "GPL",
-  "gitHead": "64d7f2dce38aa36c0d7cabb9d3fc2347e0c808dd"
+  "license": "GPL"
 }
