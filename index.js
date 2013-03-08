@@ -1,3 +1,6 @@
+module.exports = nodeTeX;
+module.exports.require = require;
+var _require = module.exports.require;
 var fs = require('fs');
 var path = require('path');
 var spawn = require('child_process').spawn;
@@ -26,7 +29,9 @@ function runTeX(options, callback) {
       fs.readFile(options.file, 'utf8', function(log) {
         var errors = checkLog(log);
         if (errors === []) {
-          runTeX(options);
+          process.nextTick(function () {
+            runTeX(options, callback);
+          });
         } else {
           callback(errors);
         }
@@ -65,7 +70,7 @@ function nodeTeX(stream, options, callback) {
       options.path = tmpPath;
       options.file = path.join(options.path, options.filename);
       writeStream = fs.createWriteStream(options.file);
-      writeStream.on('end', function (err) {
+      stream.on('end', function (err) {
         runTeX(options, callback);
       });
       writeStream.on('error', callback);
@@ -73,4 +78,3 @@ function nodeTeX(stream, options, callback) {
     }
   );
 };
-module.exports = nodeTeX;

@@ -17,5 +17,15 @@
     "lualatex"
   ],
   "author": "mikanda IT Solutions",
-  "license": "GPL"
+  "license": "GPL",
+  "dependencies": {
+    "string-stream": ">=0.0.3",
+    "tmp": "0.0.16"
+  },
+  "devDependencies": {
+    "should": "*",
+    "pipette": "*",
+    "mockery": "*",
+    "mocha": "*"
+  }
 }
