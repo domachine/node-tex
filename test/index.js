@@ -4,6 +4,7 @@ var mockery = require('mockery'),
     Pipe = require('pipette').Pipe,
     EventEmitter = require('events').EventEmitter,
     should = require('should');
+    fs = require('fs');
 describe('NodeTeX', function () {
   var options = {
     prefix: 'node-tex-test',
@@ -23,6 +24,9 @@ describe('NodeTeX', function () {
       },
       readFile: function () {
         return '';
+      },
+      createReadStream: function (path) {
+        path.should.equal(options.file);
       }
     });
     mockery.registerMock('child_process', {

@@ -75,7 +75,10 @@ function nodeTeX(stream, options, callback) {
       options.file = path.join(options.path, options.filename);
       writeStream = fs.createWriteStream(options.file);
       stream.on('end', function (err) {
-        runTeX(options, callback);
+        runTeX(options, function (err) {
+          if (err) throw err;
+          callback(fs.createReadStream(options.file));
+        });
       });
       writeStream.on('error', callback);
       stream.pipe(writeStream);
