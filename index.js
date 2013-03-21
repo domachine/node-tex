@@ -94,7 +94,7 @@ function nodeTeX(stream, dependencies, options, callback) {
           options.path = tmpPath;
           options.file = path.join(options.path, options.filename);
           writeStream = fs.createWriteStream(options.file);
-          stream.on('end', function (err) {
+          writeStream.on('close', function (err) {
             runTeX(options, function (err) {
               var pdf = path.join(
                 options.path,
