@@ -14,6 +14,9 @@ function TeXError(line, error, message) {
 }
 function runTeX(options, callback) {
   var tex;
+  if (options.env) {
+    options.env.__proto__ = process.env;
+  }
   tex = spawn(
     options.command,
     [
