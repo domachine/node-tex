@@ -1,6 +1,6 @@
 {
   "name": "node-tex",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "description": "Simple backend to TeX for node.js",
   "main": "index.js",
   "scripts": {
