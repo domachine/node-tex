@@ -23,7 +23,8 @@ function runTeX(options, callback) {
       options.filename
     ],
     {
-      cwd: options.path
+      cwd: options.path,
+      env: options.env
     }
   );
   tex.on('exit', function (code) {
