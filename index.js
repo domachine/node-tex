@@ -7,6 +7,7 @@ var spawn = require('child_process').spawn;
 var tmp = require('tmp');
 var util = require('util');
 var async = require('async');
+var rmR = require('./lib/util').rmR;
 function TeXError(line, error, message) {
   this.line = line;
   this.error = error;
@@ -43,7 +44,7 @@ function runTeX(options, callback) {
         }
       });
     } else {
-      callback();
+      rmR(options.path, callback);
     }
   });
 }
@@ -78,8 +79,7 @@ function nodeTeX(stream, dependencies, options, callback) {
   options.filename = 'texput.tex';
   tmp.dir(
     {
-      prefix: 'node-tex-tmp', 
-      keep: options.keep || false
+      prefix: 'node-tex-tmp'
     }, 
     function (err, tmpPath) {
       if (err) throw err;

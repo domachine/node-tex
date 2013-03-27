@@ -12,7 +12,7 @@ describe('NodeTeX', function () {
     path: 'test-path'
   };
   before(function () {
-    mockery.enable();
+    mockery.enable({ useCleanCache: true });
     mockery.registerMock('fs', {
       createWriteStream: function (file) {
         var pipe = new Pipe();
@@ -43,6 +43,12 @@ describe('NodeTeX', function () {
         should.exist(env);
         env.cwd.should.equal(options.path);
         return new Process();
+      }
+    });
+    mockery.registerMock('./lib/util', {
+      rmR: function (path, next) {
+        path.should.equal(options.path);
+        next();
       }
     });
     mockery.registerMock('tmp', {
